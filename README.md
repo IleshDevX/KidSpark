@@ -210,3 +210,4 @@ KidSpark aims to transform early education by creating a safe, joyful, parent-co
 ---
 
 **Next Steps:** Open `index.html` in a browser to start using KidSpark!
+# KidSpark
