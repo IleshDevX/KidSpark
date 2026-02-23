@@ -457,22 +457,97 @@
 
             </div>
             <div id="parents-settings-tab" class="parents-tab-content hidden">
-              <div class="settings-form">
-                <div class="set-form-group">
-                  <label for="new-pin">🔑 Change PIN</label>
-                  <input type="password" id="new-pin" placeholder="New 4-digit PIN" maxlength="4" />
+              <div class="settings-layout">
+                <!-- Settings Form Card -->
+                <div class="settings-card settings-form-card">
+                  <div class="settings-card-header">
+                    <span class="settings-card-icon">⚙️</span>
+                    <h3>Account Settings</h3>
+                  </div>
+                  <div class="settings-form">
+                    <div class="set-form-group">
+                      <label for="new-pin">🔑 Change PIN</label>
+                      <input type="password" id="new-pin" placeholder="New 4-digit PIN" maxlength="4" />
+                      <span class="input-hint">Enter a secure 4-digit PIN to protect the parent portal</span>
+                    </div>
+                    <div class="set-form-group">
+                      <label for="new-time-limit">⏰ Daily Time Limit (minutes)</label>
+                      <input type="number" id="new-time-limit" placeholder="e.g. 60" min="15" max="240" />
+                      <span class="input-hint">Recommended: 30-60 minutes for healthy screen time</span>
+                    </div>
+                    <button class="btn-primary" id="save-settings-btn">💾 Save Settings</button>
+                    <p class="settings-success hidden" id="settings-success">✅ Settings saved!</p>
+                  </div>
                 </div>
-                <div class="set-form-group">
-                  <label for="new-time-limit">⏰ Daily Time Limit (minutes)</label>
-                  <input type="number" id="new-time-limit" placeholder="e.g. 60" min="15" max="240" />
+                <!-- Tips Card -->
+                <div class="settings-card settings-tips-card">
+                  <div class="settings-card-header">
+                    <span class="settings-card-icon">💡</span>
+                    <h3>Parenting Tips</h3>
+                  </div>
+                  <ul class="tips-list">
+                    <li><span class="tip-icon">🎯</span> Set consistent daily learning schedules</li>
+                    <li><span class="tip-icon">🤝</span> Learn together with your child sometimes</li>
+                    <li><span class="tip-icon">🎉</span> Celebrate small achievements and milestones</li>
+                    <li><span class="tip-icon">📱</span> Balance screen time with physical activities</li>
+                    <li><span class="tip-icon">💬</span> Ask about what they learned each day</li>
+                  </ul>
                 </div>
-                <button class="btn-primary" id="save-settings-btn">💾 Save Settings</button>
-                <p class="settings-success hidden" id="settings-success">✅ Settings saved!</p>
               </div>
             </div>
             <div id="parents-report-tab" class="parents-tab-content hidden">
-              <p class="report-desc">Download a PDF report of your child's learning progress.</p>
-              <button class="btn-primary" id="download-report-btn">📄 Download PDF Report</button>
+              <div class="report-layout">
+                <!-- Report Preview Card -->
+                <div class="report-preview-card">
+                  <div class="report-preview-header">
+                    <span class="report-icon">📊</span>
+                    <div>
+                      <h3>Learning Progress Report</h3>
+                      <p class="report-desc">Comprehensive PDF report of your child's achievements</p>
+                    </div>
+                  </div>
+                  <div class="report-preview-content">
+                    <div class="report-preview-item">
+                      <span class="preview-icon">📈</span>
+                      <span>Progress charts & graphs</span>
+                    </div>
+                    <div class="report-preview-item">
+                      <span class="preview-icon">🎮</span>
+                      <span>Games completed & scores</span>
+                    </div>
+                    <div class="report-preview-item">
+                      <span class="preview-icon">⏱️</span>
+                      <span>Time spent learning</span>
+                    </div>
+                    <div class="report-preview-item">
+                      <span class="preview-icon">⭐</span>
+                      <span>Stars & achievements earned</span>
+                    </div>
+                    <div class="report-preview-item">
+                      <span class="preview-icon">🔥</span>
+                      <span>Login streak history</span>
+                    </div>
+                    <div class="report-preview-item">
+                      <span class="preview-icon">📚</span>
+                      <span>Subject-wise breakdown</span>
+                    </div>
+                  </div>
+                  <button class="btn-primary btn-download-report" id="download-report-btn">📄 Download PDF Report</button>
+                </div>
+                <!-- Report Info Card -->
+                <div class="report-info-card">
+                  <div class="report-info-header">
+                    <span class="info-icon">ℹ️</span>
+                    <h4>About Reports</h4>
+                  </div>
+                  <p class="report-info-text">
+                    Reports are generated based on your child's activity. Share them with teachers or keep them as progress records. Reports include all data from the current account.
+                  </p>
+                  <div class="report-format-badge">
+                    <span>📑</span> PDF Format • Ready to Print
+                  </div>
+                </div>
+              </div>
             </div>
             <button class="btn-secondary" id="parents-logout-btn" style="margin-top:2rem;">🔒 Lock Portal</button>
           </div>

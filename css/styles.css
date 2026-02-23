@@ -220,14 +220,15 @@ body {
 .set-form-group input {
     width: 100%;
     padding: 0.7rem 1rem;
-    border: 0.0625rem solid rgba(247, 248, 226, 0.25);
+    border: 0.125rem solid rgba(58, 60, 66, 0.2);
     border-radius: var(--br-md);
-    background: rgba(255, 255, 255, 100%);
+    background: #ffffff;
     color: #3a3c42;
     font-family: var(--font-body);
     font-size: 0.95rem;
     outline: none;
     transition: border-color var(--tr-fast), box-shadow var(--tr-fast);
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.05);
 }
 
 .set-form-group input:focus {
@@ -236,7 +237,7 @@ body {
 }
 
 .set-form-group input::placeholder {
-    color: rgba(247, 248, 226, 0.40);
+    color: #999999;
 }
 
 .form-group input {
@@ -332,6 +333,24 @@ body {
 .btn-secondary:hover {
     background: rgba(255, 255, 255, 0.22);
     transform: translateY(-0.0625rem);
+}
+
+/* Lock Portal Button - Enhanced Visibility */
+#parents-logout-btn {
+    background: #FDECEC !important;
+    color: #D32F2F !important;
+    border: 0.0625rem solid rgba(211, 47, 47, 0.2) !important;
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.08);
+    padding: 0.75rem 1.5rem !important;
+    border-radius: var(--br-lg) !important;
+    font-weight: 800 !important;
+    transition: all var(--tr-fast) !important;
+}
+
+#parents-logout-btn:hover {
+    background: #FBD5D5 !important;
+    box-shadow: 0 0.375rem 1rem rgba(211, 47, 47, 0.15);
+    transform: translateY(-0.125rem) !important;
 }
 
 /* ============================================================ Main App Layout === */
@@ -537,16 +556,23 @@ body {
     flex: 1;
     margin-left: var(--sidebar-w);
     min-height: 100vh;
-    padding: var(--sp-xl);
+    padding: 0;
     overflow-y: auto;
     transition: margin-left var(--tr-med);
     max-height: 100vh;
+    display: flex;
+    justify-content: center;
 }
 
+/* Content Wrapper for Centering */
 .content-section {
-    display: none;
-    animation: fade-in 0.3s ease;
+    max-width: 1200px;
+    width: 100%;
+    padding: var(--sp-xl) 2rem;
+    margin: 0 auto;
 }
+
+
 
 .content-section.active {
     display: block;
@@ -977,9 +1003,10 @@ body {
 /* ============================================================ Image Generator ===== */
 .animal-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
-    gap: var(--sp-md);
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1.25rem;
     margin-bottom: var(--sp-xl);
+    max-width: 100%;
 }
 
 .animal-chip {
@@ -1128,8 +1155,9 @@ body {
 /* ============================================================ Games ============= */
 .games-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
-    gap: var(--sp-lg);
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    max-width: 100%;
 }
 
 .game-card {
@@ -1966,7 +1994,7 @@ body {
 }
 
 .settings-form {
-    max-width: 22rem;
+    max-width: 100%;
 }
 
 .settings-form .form-group input {
@@ -1990,7 +2018,206 @@ body {
 .report-desc {
     font-size: 0.92rem;
     color: var(--c-plum);
-    margin-bottom: var(--sp-lg);
+    margin-bottom: 0;
+}
+
+/* Settings Layout - Two Column */
+.settings-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    max-width: 100%;
+}
+
+.settings-card {
+    background: var(--bg-card);
+    border-radius: var(--br-xl);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    border: 0.0625rem solid rgba(255, 255, 255, 0.6);
+}
+
+.settings-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 0.0625rem solid rgba(58, 60, 66, 0.1);
+}
+
+.settings-card-header h3 {
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--c-dark);
+    margin: 0;
+}
+
+.settings-card-icon {
+    font-size: 1.5rem;
+}
+
+.input-hint {
+    display: block;
+    font-size: 0.75rem;
+    color: #888;
+    margin-top: 0.35rem;
+}
+
+.tips-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.tips-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+    color: var(--c-dark);
+    padding: 0.65rem 0.85rem;
+    background: rgba(156, 205, 98, 0.08);
+    border-radius: var(--br-md);
+    transition: all var(--tr-fast);
+}
+
+.tips-list li:hover {
+    background: rgba(156, 205, 98, 0.15);
+    transform: translateX(0.25rem);
+}
+
+.tip-icon {
+    font-size: 1.1rem;
+}
+
+/* Report Layout - Two Column */
+.report-layout {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 1.5rem;
+    max-width: 100%;
+}
+
+.report-preview-card {
+    background: var(--bg-card);
+    border-radius: var(--br-xl);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    border: 0.0625rem solid rgba(255, 255, 255, 0.6);
+}
+
+.report-preview-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 0.0625rem solid rgba(58, 60, 66, 0.1);
+}
+
+.report-preview-header h3 {
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--c-dark);
+    margin: 0 0 0.25rem 0;
+}
+
+.report-icon {
+    font-size: 2.5rem;
+}
+
+.report-preview-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.report-preview-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.88rem;
+    color: var(--c-dark);
+    padding: 0.6rem 0.8rem;
+    background: rgba(218, 190, 133, 0.12);
+    border-radius: var(--br-md);
+}
+
+.preview-icon {
+    font-size: 1rem;
+}
+
+.btn-download-report {
+    width: 100%;
+    padding: 0.9rem 1.5rem !important;
+}
+
+.report-info-card {
+    background: linear-gradient(135deg, rgba(156, 205, 98, 0.1), rgba(218, 190, 133, 0.1));
+    border-radius: var(--br-xl);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    border: 0.0625rem solid rgba(156, 205, 98, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.report-info-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.report-info-header h4 {
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--c-dark);
+    margin: 0;
+}
+
+.info-icon {
+    font-size: 1.25rem;
+}
+
+.report-info-text {
+    font-size: 0.85rem;
+    color: var(--c-plum);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.report-format-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--c-dark);
+    background: rgba(255, 255, 255, 0.6);
+    padding: 0.5rem 1rem;
+    border-radius: var(--br-pill);
+    margin-top: auto;
+}
+
+/* Responsive for Settings and Report */
+@media (max-width: 48rem) {
+    .settings-layout,
+    .report-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .report-preview-content {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* ============================================================ Overlays / Modals = */
@@ -2312,6 +2539,20 @@ body {
 }
 
 /* ============================================================ Responsive ======== */
+/* Tablet landscape - Adjust grid to 3 columns for games, 4 for animals */
+@media (max-width: 64rem) {
+    .games-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.25rem;
+    }
+
+    .animal-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+    }
+}
+
+/* Tablet portrait and smaller */
 @media (max-width: 48rem) {
     .sidebar {
         width: var(--sidebar-w-collapsed);
@@ -2339,6 +2580,12 @@ body {
 
     .games-grid {
         grid-template-columns: repeat(2, 1fr);
+        gap: var(--sp-md);
+    }
+
+    .animal-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--sp-md);
     }
 
     .profile-stats-grid {
@@ -2360,6 +2607,11 @@ body {
     }
 
     .games-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+
+    .animal-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 0.75rem;
     }
