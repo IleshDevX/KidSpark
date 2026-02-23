@@ -284,9 +284,8 @@ body {
     align-items: center;
     width: 100%;
     max-width: 320px;
-    margin-left: 30rem;
+    margin: 0 auto;
     margin-top: 1rem;
-
     padding: 0.85rem 1.5rem;
     background: linear-gradient(135deg, var(--c-green) 0%, #74b344 100%);
     color: var(--c-dark);
