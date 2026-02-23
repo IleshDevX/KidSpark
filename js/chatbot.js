@@ -2,70 +2,9 @@
  * KidSpark AI Chatbot
  * RAG-based Q&A with typing animation effect
  * Chapter-wise YouTube video panel (opens on right side when chapter header is clicked)
+ *
+ * 📺 VIDEO LINKS → edit js/video-links.js to change chapter videos
  */
-
-// ─── Chapter-wise YouTube Video Links ───────────────────────────────────────
-// Grade 1 educational videos per chapter/unit
-const CHAPTER_VIDEOS = {
-    // English chapters
-    'Unit 1': {
-        title: 'Unit 1 – Alphabet & Letters',
-        videoId: 'AZ_GHQilHXA',  // ABC Song for Kids
-        label: '🎵 ABC Alphabet Song'
-    },
-    'Unit 2': {
-        title: 'Unit 2 – Sight Words & Short Words',
-        videoId: 'wQFBPRFPROs',  // Sight Words for Kids
-        label: '📖 Sight Words for Kids'
-    },
-    'Unit 3': {
-        title: 'Unit 3 – Simple Sentences',
-        videoId: 'LXPBv0Bsq-o',  // Simple Sentences for Grade 1
-        label: '✍️ Building Simple Sentences'
-    },
-    'Unit 4': {
-        title: 'Unit 4 – Rhymes & Poems',
-        videoId: 'e0dJWfQHF8Y',  // Nursery Rhymes Collection
-        label: '🎵 Fun Nursery Rhymes'
-    },
-    'Unit 5': {
-        title: 'Unit 5 – Reading Comprehension',
-        videoId: 'jE1k7yzMqEo',  // Reading for Beginners
-        label: '📚 Reading for Beginners'
-    },
-    // Maths chapters
-    'Chapter 1': {
-        title: 'Chapter 1 – Numbers 1–20',
-        videoId: 'DR-cfDsHuUA',  // Count 1–20 for Kids
-        label: '🔢 Count 1 to 20'
-    },
-    'Chapter 2': {
-        title: 'Chapter 2 – Addition',
-        videoId: 'AuX7nLEqDuA',  // Addition for Grade 1
-        label: '➕ Addition for Kids'
-    },
-    'Chapter 3': {
-        title: 'Chapter 3 – Subtraction',
-        videoId: 'J78rUFdnBwk',  // Subtraction for kids
-        label: '➖ Subtraction for Kids'
-    },
-    'Chapter 4': {
-        title: 'Chapter 4 – Shapes',
-        videoId: 'OmkJOaLMzrY',  // Shapes song for kids
-        label: '🔷 Learn Shapes'
-    },
-    'Chapter 5': {
-        title: 'Chapter 5 – Measurement & Comparison',
-        videoId: 'VpRPbqAaGKg',  // Measurement for kids
-        label: '📏 Measurement & Size'
-    },
-    // Generic fallback
-    'default': {
-        title: 'Grade 1 Learning',
-        videoId: 'AZ_GHQilHXA',
-        label: '📺 Watch & Learn'
-    }
-};
 
 const KSChatbot = {
     currentSubject: 'english',
@@ -168,12 +107,22 @@ const KSChatbot = {
         const labelEl = document.getElementById('video-panel-label');
         if (!panel || !iframe) return;
 
+        // Extract bare ID in case a full URL was passed
+        const id = (typeof extractYouTubeId === 'function')
+            ? extractYouTubeId(videoId)
+            : videoId;
+
+        if (!id) {
+            console.warn('KSChatbot: no valid YouTube ID for', videoId);
+            return;
+        }
+
         // Update panel content
         if (titleEl) titleEl.textContent = title;
         if (labelEl) labelEl.textContent = label;
 
         // Set YouTube embed URL (privacy-enhanced mode)
-        iframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?rel=0&modestbranding=1&playsinline=1`;
+        iframe.src = `https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1&playsinline=1&autoplay=1`;
 
         panel.classList.remove('hidden');
         panel.classList.add('open');

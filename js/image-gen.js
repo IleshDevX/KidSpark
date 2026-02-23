@@ -406,22 +406,32 @@ const KSImageGen = {
         loading.classList.remove('hidden');
         display.classList.remove('hidden');
 
-        // Remove any existing SVG from previous click
-        const oldSvg = canvasEl.querySelector('.animal-art-svg');
-        if (oldSvg) oldSvg.remove();
+        // Remove any existing big emoji from previous click
+        const oldEmoji = canvasEl.querySelector('.animal-big-emoji');
+        if (oldEmoji) oldEmoji.remove();
 
         setTimeout(() => {
             loading.classList.add('hidden');
 
-            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-            svg.setAttribute('viewBox', '0 0 400 400');
-            svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-            svg.className = 'animal-art-svg';
-            svg.innerHTML = generateAnimalSVG(animal);
-            canvasEl.appendChild(svg);
-
-            svg.style.animation = 'pop 0.55s cubic-bezier(0.34,1.56,0.64,1)';
-        }, 800);
+            // Show the SAME emoji from the card — big and bouncy!
+            const bigEmoji = document.createElement('div');
+            bigEmoji.className = 'animal-big-emoji';
+            bigEmoji.textContent = animal.emoji;
+            bigEmoji.style.cssText = `
+                font-size: 9rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
+                height: 100%;
+                line-height: 1;
+                filter: drop-shadow(0 8px 24px rgba(0,0,0,0.18));
+                animation: pop 0.55s cubic-bezier(0.34,1.56,0.64,1);
+                cursor: default;
+                user-select: none;
+            `;
+            canvasEl.appendChild(bigEmoji);
+        }, 600);
     },
 
     bindClose() {
@@ -429,10 +439,10 @@ const KSImageGen = {
         if (close) close.addEventListener('click', () => {
             const display = document.getElementById('image-display');
             if (display) display.classList.add('hidden');
-            // Remove SVG
+            // Remove big emoji
             const canvas = document.getElementById('image-canvas');
-            const svg = canvas?.querySelector('.animal-art-svg');
-            if (svg) svg.remove();
+            const emoji = canvas?.querySelector('.animal-big-emoji');
+            if (emoji) emoji.remove();
         });
     }
 };
