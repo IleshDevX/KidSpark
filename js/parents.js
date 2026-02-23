@@ -108,7 +108,7 @@ const KSParents = {
                         <div class="ps-time-bar-wrap">
                             <div class="ps-time-bar" style="width:${pct}%" title="${pct}% used"></div>
                         </div>
-                        <div class="ps-card-note">⏳ ${timeLeftMin} min left today · Resets next day</div>
+                        <div class="ps-card-note">⏳ ${timeLeftMin} min left today · Resets to original daily limit tomorrow</div>
                     </div>
                 </div>
 
@@ -328,7 +328,7 @@ const KSParents = {
 
                 if (successEl) {
                     successEl.textContent = newLimit
-                        ? `✅ Saved! New game time limit: ${newLimit} min/day`
+                        ? `✅ Saved! New limit: ${newLimit} min (Active for TODAY only)`
                         : '✅ Settings saved!';
                     successEl.classList.remove('hidden');
                 }

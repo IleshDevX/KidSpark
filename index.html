@@ -336,7 +336,7 @@
                   stroke-dashoffset="364.4" />
               </svg>
               <!-- Avatar emoji inside ring -->
-              <div class="profile-avatar-inner">
+              <div class="profile-avatar-inner" id="profile-avatar-click" title="Click to change your avatar!">
                 <span class="profile-avatar-emoji" id="profile-avatar">🌟</span>
               </div>
               <!-- Level badge pinned to bottom of circle -->
@@ -502,6 +502,21 @@
           <button class="btn-primary" id="modal-verify">Unlock</button>
         </div>
         <p class="pin-error hidden" id="modal-pin-error">❌ Wrong PIN!</p>
+      </div>
+    </div>
+
+    <!-- Avatar Selection Modal -->
+    <div id="avatar-modal" class="modal-overlay hidden">
+      <div class="modal-card">
+        <h3>Choose Your Avatar! ✨</h3>
+        <p>Pick a fun emoji for your profile</p>
+        <div class="avatar-grid" id="avatar-options">
+          <!-- Populated by JS -->
+        </div>
+        <div class="modal-actions">
+          <button class="btn-primary" id="avatar-save">Save Selection</button>
+          <button class="btn-secondary" id="avatar-cancel">Close</button>
+        </div>
       </div>
     </div>
 

@@ -30,6 +30,7 @@ const KSStorage = {
             passwordHash: KSCrypto.hash(password),
             pinHash: KSCrypto.hash(pin),
             childName: childName || 'Learner',
+            baseTimeLimit: parseInt(timeLimit) || 60,
             timeLimit: parseInt(timeLimit) || 60,
             stats: {
                 exp: 0,
@@ -76,7 +77,9 @@ const KSStorage = {
         const data = this.load();
         if (!data) return;
         if (newPin) data.pinHash = KSCrypto.hash(newPin);
-        if (newTimeLimit) data.timeLimit = parseInt(newTimeLimit);
+        if (newTimeLimit) {
+            data.timeLimit = parseInt(newTimeLimit);
+        }
         this.save(data);
     },
 
@@ -109,6 +112,9 @@ const KSStorage = {
         data.stats.timeUsedToday = 0;
         data.stats.lastTimerDate = today;
 
+        // Restore base time limit for the new day
+        data.timeLimit = data.baseTimeLimit || 60;
+
         this.save(data);
     },
 
@@ -120,6 +126,8 @@ const KSStorage = {
         if (data.stats.lastTimerDate !== today) {
             data.stats.timeUsedToday = 0;
             data.stats.lastTimerDate = today;
+            // Restore base time limit for the new day
+            data.timeLimit = data.baseTimeLimit || 60;
             this.save(data);
         }
     },

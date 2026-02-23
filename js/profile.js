@@ -13,7 +13,10 @@ const LEVELS = [
     { level: 7, name: 'Knowledge King', expNeeded: 1800, avatar: '👑' },
 ];
 
+const AVATARS = ['🌟', '🚀', '🎨', '🧩', '🦕', '🦉', '🐱', '🐶', '🦄', '🐯', '🤖', '👾'];
+
 const KSProfile = {
+    pendingAvatar: null,
     getLevel(exp) {
         let current = LEVELS[0];
         for (const lvl of LEVELS) {
@@ -85,7 +88,7 @@ const KSProfile = {
         const pName = document.getElementById('profile-child-name');
         const pBadge = document.getElementById('profile-level-badge');
         const pLvBadge = document.getElementById('profile-lv-badge');
-        if (pAvatar) pAvatar.textContent = level.avatar;
+        if (pAvatar) pAvatar.textContent = data.stats.avatar || level.avatar;
         if (pName) pName.textContent = data.childName || 'Learner';
         if (pBadge) pBadge.textContent = `⭐ Level ${level.level} – ${level.name}`;
         if (pLvBadge) pLvBadge.textContent = `Lv. ${level.level}`;
@@ -147,10 +150,11 @@ const KSProfile = {
 
     /** Update the home-page top-right profile avatar button */
     renderHomeAvatar(exp, level, next) {
+        const data = KSStorage.load();
         const emojiEl = document.getElementById('home-profile-emoji');
         const lvEl = document.getElementById('home-profile-lv');
         const ringEl = document.getElementById('home-ring-fill');
-        if (emojiEl) emojiEl.textContent = level.avatar;
+        if (emojiEl) emojiEl.textContent = (data && data.stats.avatar) || level.avatar;
         if (lvEl) lvEl.textContent = `Lv.${level.level}`;
         if (ringEl) {
             const MINI_CIRC = 150.8; // 2π × 24
@@ -201,13 +205,84 @@ const KSProfile = {
 
     /** Wire home avatar button → profile section */
     init() {
+        // Home profile shortcut
         const btn = document.getElementById('home-profile-btn');
         if (btn) {
             btn.addEventListener('click', () => {
-                // Reuse the same nav logic as the sidebar nav items
                 const navProfile = document.getElementById('nav-profile');
                 if (navProfile) navProfile.click();
             });
         }
+
+        // Open avatar modal
+        const avatarClick = document.getElementById('profile-avatar-click');
+        if (avatarClick) {
+            avatarClick.addEventListener('click', () => this.showAvatarPicker());
+        }
+
+        // Avatar modal cancel/save
+        const avatarCancel = document.getElementById('avatar-cancel');
+        if (avatarCancel) {
+            avatarCancel.addEventListener('click', () => {
+                document.getElementById('avatar-modal').classList.add('hidden');
+            });
+        }
+
+        const avatarSave = document.getElementById('avatar-save');
+        if (avatarSave) {
+            avatarSave.addEventListener('click', () => this.saveAvatar());
+        }
+    },
+
+    showAvatarPicker() {
+        const modal = document.getElementById('avatar-modal');
+        const grid = document.getElementById('avatar-options');
+        const data = KSStorage.load();
+
+        // Start with current avatar as pending
+        this.pendingAvatar = (data && data.stats.avatar) || '🌟';
+
+        if (!modal || !grid) return;
+
+        grid.innerHTML = '';
+        AVATARS.forEach(emoji => {
+            const opt = document.createElement('div');
+            opt.className = `avatar-option ${emoji === this.pendingAvatar ? 'selected' : ''}`;
+            opt.textContent = emoji;
+            opt.addEventListener('click', () => {
+                this.pendingAvatar = emoji;
+                // Highlight only the clicked one
+                document.querySelectorAll('.avatar-option').forEach(el => {
+                    el.classList.toggle('selected', el.textContent === emoji);
+                });
+            });
+            grid.appendChild(opt);
+        });
+
+        modal.classList.remove('hidden');
+    },
+
+    saveAvatar() {
+        if (!this.pendingAvatar) return;
+
+        // 1. Save to persistent storage
+        const data = KSStorage.load();
+        if (!data) return;
+        data.stats.avatar = this.pendingAvatar;
+        KSStorage.save(data);
+
+        // 2. Direct DOM updates for instant change
+        const pAvatar = document.getElementById('profile-avatar');
+        const hAvatar = document.getElementById('home-profile-emoji');
+        if (pAvatar) pAvatar.textContent = this.pendingAvatar;
+        if (hAvatar) hAvatar.textContent = this.pendingAvatar;
+
+        // 3. Update state globally
+        this.renderAll();
+
+        // 4. Close modal and notify
+        const modal = document.getElementById('avatar-modal');
+        if (modal) modal.classList.add('hidden');
+        KSApp.showToast('Avatar updated! ✨', 'success');
     }
 };
