@@ -42,8 +42,10 @@ const KSProfile = {
         const newLevel = this.getLevel(data.stats.exp);
         if (newLevel.level > prevLevel.level) {
             KSApp.showToast(`🎉 LEVEL UP! You are now ${newLevel.name} ${newLevel.avatar}!`, 'success');
+            this.triggerConfetti();
         } else {
             KSApp.showToast(`+${amount} EXP earned! ⭐`, 'success');
+            this.triggerSparkle();
         }
         this.renderAll();
     },
@@ -284,5 +286,45 @@ const KSProfile = {
         const modal = document.getElementById('avatar-modal');
         if (modal) modal.classList.add('hidden');
         KSApp.showToast('Avatar updated! ✨', 'success');
+    },
+
+    /** Sparkle micro-interaction on EXP gain */
+    triggerSparkle() {
+        const colors = ['#99CDD8', '#F3C3B2', '#FDE8D3', '#CFD6C4', '#E8C87A'];
+        const container = document.createElement('div');
+        container.className = 'sparkle-burst';
+        container.style.left = '50%';
+        container.style.top = '50%';
+        for (let i = 0; i < 12; i++) {
+            const p = document.createElement('div');
+            p.className = 'sparkle-particle';
+            const angle = (i / 12) * Math.PI * 2;
+            const dist = 30 + Math.random() * 40;
+            p.style.setProperty('--tx', `${Math.cos(angle) * dist}px`);
+            p.style.setProperty('--ty', `${Math.sin(angle) * dist}px`);
+            p.style.background = colors[i % colors.length];
+            container.appendChild(p);
+        }
+        document.body.appendChild(container);
+        setTimeout(() => container.remove(), 900);
+    },
+
+    /** Confetti burst on level up */
+    triggerConfetti() {
+        const colors = ['#99CDD8', '#F3C3B2', '#FDE8D3', '#CFD6C4', '#E8C87A', '#7AB8C5'];
+        for (let i = 0; i < 30; i++) {
+            const piece = document.createElement('div');
+            piece.className = 'confetti-piece';
+            piece.style.left = (20 + Math.random() * 60) + 'vw';
+            piece.style.top = '-10px';
+            piece.style.background = colors[i % colors.length];
+            piece.style.animationDuration = (1 + Math.random() * 1.5) + 's';
+            piece.style.animationDelay = (Math.random() * 0.5) + 's';
+            piece.style.width = (6 + Math.random() * 8) + 'px';
+            piece.style.height = (6 + Math.random() * 8) + 'px';
+            piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+            document.body.appendChild(piece);
+            setTimeout(() => piece.remove(), 2500);
+        }
     }
 };
