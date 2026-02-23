@@ -88,7 +88,6 @@
         <div class="sidebar-header">
           <span class="logo-spark-sm">⚡</span>
           <span class="sidebar-logo-text">KidSpark</span>
-          <button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle sidebar">☰</button>
         </div>
         <ul class="nav-list">
           <li class="nav-item active" data-section="home" id="nav-home">
@@ -126,9 +125,23 @@
       <main id="main-content" class="main-content">
         <!-- Home Section -->
         <section id="section-home" class="content-section active">
-          <div class="section-header">
-            <h2 class="section-title">Hello, <span id="child-name-display">Learner</span>! 🌟</h2>
-            <p class="section-subtitle">What would you like to do today?</p>
+          <div class="section-header home-section-header">
+            <div>
+              <h2 class="section-title">Hello, <span id="child-name-display">Learner</span>! 🌟</h2>
+              <p class="section-subtitle">What would you like to do today?</p>
+            </div>
+            <!-- Profile avatar shortcut top-right -->
+            <button id="home-profile-btn" class="home-profile-btn" title="View my profile" data-goto="profile">
+              <div class="home-profile-ring" id="home-profile-ring">
+                <svg class="home-ring-svg" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg">
+                  <circle class="ring-track" cx="28" cy="28" r="24" />
+                  <circle class="ring-fill" id="home-ring-fill" cx="28" cy="28" r="24" stroke-dasharray="150.8"
+                    stroke-dashoffset="150.8" />
+                </svg>
+                <span class="home-profile-emoji" id="home-profile-emoji">🌟</span>
+              </div>
+              <span class="home-profile-lv" id="home-profile-lv">Lv.1</span>
+            </button>
           </div>
           <div class="home-stats-bar">
             <div class="stat-chip">⭐ <span id="home-stars">0</span> Stars</div>
@@ -308,10 +321,45 @@
           <div class="section-header">
             <h2 class="section-title">🏆 My Profile</h2>
           </div>
-          <div class="profile-card">
-            <div class="profile-avatar" id="profile-avatar">🌟</div>
+
+          <!-- Hero Profile Card -->
+          <div class="profile-hero-card">
+            <!-- Circular avatar with EXP ring -->
+            <div class="profile-avatar-wrap">
+              <svg class="profile-ring-svg" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
+                <!-- Decorative dashes behind ring -->
+                <circle class="ring-deco" cx="70" cy="70" r="62" />
+                <!-- Track -->
+                <circle class="ring-track-lg" cx="70" cy="70" r="58" />
+                <!-- Animated EXP fill -->
+                <circle class="ring-fill-lg" id="profile-ring-fill" cx="70" cy="70" r="58" stroke-dasharray="364.4"
+                  stroke-dashoffset="364.4" />
+              </svg>
+              <!-- Avatar emoji inside ring -->
+              <div class="profile-avatar-inner">
+                <span class="profile-avatar-emoji" id="profile-avatar">🌟</span>
+              </div>
+              <!-- Level badge pinned to bottom of circle -->
+              <div class="profile-lv-badge" id="profile-lv-badge">Lv. 1</div>
+            </div>
+
             <h3 class="profile-name" id="profile-child-name">Learner</h3>
-            <div class="profile-level-badge" id="profile-level-badge">⭐ Level 1</div>
+            <div class="profile-level-badge" id="profile-level-badge">⭐ Level 1 – Little Spark</div>
+
+            <!-- Level milestone dots -->
+            <div class="level-path">
+              <div class="level-path-label">Level Journey</div>
+              <div class="level-dots" id="level-dots">
+                <!-- Filled by JS -->
+                <div class="level-dot done" data-lv="1"><span>1</span></div>
+                <div class="level-dot" data-lv="2"><span>2</span></div>
+                <div class="level-dot" data-lv="3"><span>3</span></div>
+                <div class="level-dot" data-lv="4"><span>4</span></div>
+                <div class="level-dot" data-lv="5"><span>5</span></div>
+                <div class="level-dot" data-lv="6"><span>6</span></div>
+                <div class="level-dot" data-lv="7"><span>7</span></div>
+              </div>
+            </div>
           </div>
           <div class="profile-stats-grid">
             <div class="profile-stat-card">

@@ -76,17 +76,41 @@ const KSProfile = {
         const level = this.getLevel(stats.exp || 0);
         const next = this.getNextLevel(stats.exp || 0);
 
-        // Header
+        // Header greeting
         const nameEl = document.getElementById('child-name-display');
         if (nameEl) nameEl.textContent = data.childName || 'Learner';
 
-        // Profile card
+        // ---- Profile hero card ----
         const pAvatar = document.getElementById('profile-avatar');
         const pName = document.getElementById('profile-child-name');
         const pBadge = document.getElementById('profile-level-badge');
+        const pLvBadge = document.getElementById('profile-lv-badge');
         if (pAvatar) pAvatar.textContent = level.avatar;
         if (pName) pName.textContent = data.childName || 'Learner';
         if (pBadge) pBadge.textContent = `⭐ Level ${level.level} – ${level.name}`;
+        if (pLvBadge) pLvBadge.textContent = `Lv. ${level.level}`;
+
+        // ---- Big SVG EXP ring (profile page) ----
+        const RING_CIRC = 364.4;  // 2π × 58
+        const ringFill = document.getElementById('profile-ring-fill');
+        if (ringFill) {
+            let pct = 0;
+            if (next) {
+                pct = Math.min(1, (stats.exp - level.expNeeded) / (next.expNeeded - level.expNeeded));
+            } else {
+                pct = 1; // max level
+            }
+            ringFill.style.strokeDashoffset = RING_CIRC * (1 - pct);
+        }
+
+        // ---- Level milestone dots ----
+        const dots = document.querySelectorAll('.level-dot');
+        dots.forEach(dot => {
+            const lv = parseInt(dot.dataset.lv, 10);
+            dot.classList.remove('done', 'current');
+            if (lv < level.level) dot.classList.add('done');
+            else if (lv === level.level) dot.classList.add('current');
+        });
 
         // Stats
         const setPState = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
@@ -95,13 +119,13 @@ const KSProfile = {
         setPState('pstat-days', stats.loginStreak || 1);
         setPState('pstat-games', stats.gamesPlayed || 0);
 
-        // Home stats
+        // Home stats bar
         setPState('home-stars', stats.stars || 0);
         setPState('home-exp', stats.exp || 0);
         setPState('home-days', stats.loginStreak || 1);
         setPState('home-lives', stats.lives || 20);
 
-        // EXP bar
+        // EXP progress bar
         if (next) {
             const fill = ((stats.exp - level.expNeeded) / (next.expNeeded - level.expNeeded)) * 100;
             const bar = document.getElementById('exp-bar-fill');
@@ -115,8 +139,31 @@ const KSProfile = {
             if (lbl) lbl.textContent = '🏆 Max Level Reached!';
         }
 
+        // ---- Home top-right avatar mini ring ----
+        this.renderHomeAvatar(stats.exp || 0, level, next);
+
         this.renderLives();
     },
+
+    /** Update the home-page top-right profile avatar button */
+    renderHomeAvatar(exp, level, next) {
+        const emojiEl = document.getElementById('home-profile-emoji');
+        const lvEl = document.getElementById('home-profile-lv');
+        const ringEl = document.getElementById('home-ring-fill');
+        if (emojiEl) emojiEl.textContent = level.avatar;
+        if (lvEl) lvEl.textContent = `Lv.${level.level}`;
+        if (ringEl) {
+            const MINI_CIRC = 150.8; // 2π × 24
+            let pct = 0;
+            if (next) {
+                pct = Math.min(1, (exp - level.expNeeded) / (next.expNeeded - level.expNeeded));
+            } else {
+                pct = 1;
+            }
+            ringEl.style.strokeDashoffset = MINI_CIRC * (1 - pct);
+        }
+    },
+
 
     renderLives() {
         const data = KSStorage.load();
@@ -150,5 +197,17 @@ const KSProfile = {
     renderAll() {
         this.render();
         this.renderSidebarLives();
+    },
+
+    /** Wire home avatar button → profile section */
+    init() {
+        const btn = document.getElementById('home-profile-btn');
+        if (btn) {
+            btn.addEventListener('click', () => {
+                // Reuse the same nav logic as the sidebar nav items
+                const navProfile = document.getElementById('nav-profile');
+                if (navProfile) navProfile.click();
+            });
+        }
     }
 };

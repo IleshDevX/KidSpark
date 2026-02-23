@@ -44,6 +44,7 @@ const KSApp = {
 
         // Init subsystems
         KSProfile.renderAll();
+        KSProfile.init();
         KSTimer.init();
         KSChatbot.init();
         KSImageGen.init();
@@ -169,11 +170,12 @@ const KSApp = {
     },
 
     bindSidebarToggle() {
-        const toggle = document.getElementById('sidebar-toggle');
+        const logo = document.querySelector('.logo-spark-sm');
         const sidebar = document.getElementById('sidebar');
         const main = document.getElementById('main-content');
-        if (toggle && sidebar) {
-            toggle.addEventListener('click', () => {
+        if (logo && sidebar) {
+            logo.style.cursor = 'pointer';
+            logo.addEventListener('click', () => {
                 sidebar.classList.toggle('collapsed');
                 const isCollapsed = sidebar.classList.contains('collapsed');
                 if (main) {

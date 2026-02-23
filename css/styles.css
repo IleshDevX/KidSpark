@@ -334,7 +334,8 @@ body {
 
 .sidebar.collapsed .nav-label,
 .sidebar.collapsed .sidebar-logo-text,
-.sidebar.collapsed .sidebar-timer span:last-child {
+.sidebar.collapsed .sidebar-timer span:last-child,
+.sidebar.collapsed .sidebar-lives span:last-child {
     display: none;
 }
 
@@ -350,6 +351,7 @@ body {
     font-size: 1.5rem;
     flex-shrink: 0;
     filter: drop-shadow(0 0 0.4rem rgba(156, 205, 98, 0.8));
+    cursor: pointer;
 }
 
 .sidebar-logo-text {
@@ -365,7 +367,7 @@ body {
     border: none;
     color: rgba(247, 248, 226, 0.5);
     font-size: 1rem;
-    cursor: pointer;
+    cursor: default;
     padding: 0.25rem;
     border-radius: var(--br-sm);
     transition: color var(--tr-fast);
@@ -507,6 +509,13 @@ body {
     margin-bottom: var(--sp-xl);
 }
 
+.home-section-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--sp-md);
+}
+
 .section-title {
     font-family: var(--font-heading);
     font-size: 2rem;
@@ -519,6 +528,76 @@ body {
     font-size: 1rem;
     color: var(--c-plum);
     margin-top: 0.3rem;
+}
+
+/* ---- Home top-right profile avatar button ---- */
+.home-profile-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    flex-shrink: 0;
+    transition: transform var(--tr-slow);
+}
+
+.home-profile-btn:hover {
+    transform: scale(1.1);
+}
+
+.home-profile-ring {
+    position: relative;
+    width: 3.5rem;
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.home-ring-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.home-ring-svg .ring-track {
+    fill: none;
+    stroke: rgba(156, 205, 98, 0.2);
+    stroke-width: 4;
+}
+
+.home-ring-svg .ring-fill {
+    fill: none;
+    stroke: url(#expGrad);
+    stroke-width: 4;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1s ease;
+    stroke: var(--c-green);
+    filter: drop-shadow(0 0 4px rgba(156, 205, 98, 0.7));
+}
+
+.home-profile-emoji {
+    font-size: 1.8rem;
+    position: relative;
+    z-index: 1;
+    line-height: 1;
+    filter: drop-shadow(0 0 6px rgba(156, 205, 98, 0.5));
+}
+
+.home-profile-lv {
+    font-size: 0.72rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--c-green), #fcdb3a);
+    color: var(--c-dark);
+    padding: 0.12rem 0.55rem;
+    border-radius: var(--br-pill);
+    letter-spacing: 0.04em;
+    box-shadow: 0 2px 8px rgba(156, 205, 98, 0.4);
 }
 
 /* ============================================================ Home ============= */
@@ -1335,22 +1414,107 @@ body {
 }
 
 /* ============================================================ Profile =========== */
-.profile-card {
+.profile-hero-card {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: var(--sp-xl);
-    background: linear-gradient(135deg, #3A3c42 0%, #452B30 100%);
+    padding: var(--sp-xl) var(--sp-xl) var(--sp-lg);
+    background: linear-gradient(145deg, #3A3c42 0%, #452B30 60%, #74404c 100%);
     border-radius: var(--br-xl);
     margin-bottom: var(--sp-xl);
     box-shadow: var(--shadow-lg);
+    position: relative;
+    overflow: hidden;
 }
 
-.profile-avatar {
-    font-size: 5rem;
-    margin-bottom: var(--sp-sm);
-    filter: drop-shadow(0 0 1rem rgba(156, 205, 98, 0.5));
+.profile-hero-card::before {
+    content: '';
+    position: absolute;
+    width: 18rem;
+    height: 18rem;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(156, 205, 98, 0.18) 0%, transparent 70%);
+    top: -5rem;
+    right: -5rem;
+    pointer-events: none;
+}
+
+/* Circular avatar wrap */
+.profile-avatar-wrap {
+    position: relative;
+    width: 8.75rem;
+    height: 8.75rem;
+    margin-bottom: var(--sp-md);
+    flex-shrink: 0;
+}
+
+.profile-ring-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+/* Dashed decoration ring */
+.ring-deco {
+    fill: none;
+    stroke: rgba(247, 248, 226, 0.08);
+    stroke-width: 2;
+    stroke-dasharray: 6 4;
+}
+
+/* EXP track */
+.ring-track-lg {
+    fill: none;
+    stroke: rgba(156, 205, 98, 0.18);
+    stroke-width: 8;
+}
+
+/* Animated EXP fill */
+.ring-fill-lg {
+    fill: none;
+    stroke-linecap: round;
+    stroke-width: 8;
+    stroke: var(--c-green);
+    transition: stroke-dashoffset 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    filter: drop-shadow(0 0 6px rgba(156, 205, 98, 0.8));
+}
+
+/* Avatar emoji circle */
+.profile-avatar-inner {
+    position: absolute;
+    inset: 0.75rem;
+    background: linear-gradient(145deg, #452B30, #3A3c42);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 0 1.5rem rgba(0, 0, 0, 0.4);
+}
+
+.profile-avatar-emoji {
+    font-size: 3.5rem;
     animation: float 3s ease-in-out infinite;
+    filter: drop-shadow(0 0 0.8rem rgba(156, 205, 98, 0.6));
+}
+
+/* Level badge pinned to bottom of circle */
+.profile-lv-badge {
+    position: absolute;
+    bottom: -0.4rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #fcdb3a 0%, var(--c-green) 100%);
+    color: var(--c-dark);
+    font-size: 0.78rem;
+    font-weight: 900;
+    padding: 0.2rem 0.75rem;
+    border-radius: var(--br-pill);
+    box-shadow: 0 3px 10px rgba(156, 205, 98, 0.55);
+    white-space: nowrap;
+    letter-spacing: 0.06em;
+    border: 2px solid rgba(255, 255, 255, 0.35);
 }
 
 .profile-name {
@@ -1369,6 +1533,90 @@ body {
     padding: 0.35rem 1rem;
     border-radius: var(--br-pill);
     box-shadow: 0 0 1rem rgba(156, 205, 98, 0.4);
+    margin-bottom: var(--sp-lg);
+}
+
+/* Level milestone dots row */
+.level-path {
+    width: 100%;
+    max-width: 26rem;
+    margin-top: var(--sp-sm);
+}
+
+.level-path-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: rgba(247, 248, 226, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    text-align: center;
+    margin-bottom: 0.55rem;
+}
+
+.level-dots {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+}
+
+.level-dot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    flex: 1;
+}
+
+/* connector line between dots */
+.level-dot:not(:first-child)::before {
+    content: '';
+    position: absolute;
+    right: 50%;
+    top: 50%;
+    width: calc(100% - 1.6rem);
+    height: 0.18rem;
+    background: rgba(247, 248, 226, 0.18);
+    transform: translateY(-50%);
+    z-index: 0;
+}
+
+.level-dot.done:not(:first-child)::before,
+.level-dot.current:not(:first-child)::before {
+    background: linear-gradient(90deg, var(--c-green), rgba(156, 205, 98, 0.4));
+}
+
+.level-dot span {
+    position: relative;
+    z-index: 1;
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 900;
+    background: rgba(247, 248, 226, 0.12);
+    border: 0.125rem solid rgba(247, 248, 226, 0.2);
+    color: rgba(247, 248, 226, 0.45);
+    transition: all var(--tr-med);
+}
+
+.level-dot.done span {
+    background: var(--c-green);
+    border-color: var(--c-green);
+    color: var(--c-dark);
+    box-shadow: 0 0 8px rgba(156, 205, 98, 0.6);
+}
+
+.level-dot.current span {
+    background: linear-gradient(135deg, #fcdb3a, var(--c-green));
+    border-color: #fcdb3a;
+    color: var(--c-dark);
+    box-shadow: 0 0 12px rgba(252, 219, 58, 0.7);
+    animation: pulse-glow 1.8s ease-in-out infinite;
+    transform: scale(1.25);
 }
 
 .profile-stats-grid {
