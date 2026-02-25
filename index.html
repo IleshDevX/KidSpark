@@ -329,49 +329,37 @@
 
         <!-- Profile Section -->
         <section id="section-profile" class="content-section hidden">
-          <div class="section-header">
-            <h2 class="section-title">🏆 My Profile</h2>
+          <div class="section-header profile-dashboard-header">
+            <h2 class="section-title">👤 My Dashboard</h2>
           </div>
 
-          <!-- Hero Profile Card -->
-          <div class="profile-hero-card">
-            <!-- Circular avatar with EXP ring -->
-            <div class="profile-avatar-wrap">
-              <svg class="profile-ring-svg" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
-                <!-- Decorative dashes behind ring -->
-                <circle class="ring-deco" cx="70" cy="70" r="62" />
-                <!-- Track -->
-                <circle class="ring-track-lg" cx="70" cy="70" r="58" />
-                <!-- Animated EXP fill -->
-                <circle class="ring-fill-lg" id="profile-ring-fill" cx="70" cy="70" r="58" stroke-dasharray="364.4"
-                  stroke-dashoffset="364.4" />
-              </svg>
-              <!-- Avatar emoji inside ring -->
-              <div class="profile-avatar-inner" id="profile-avatar-click" title="Click to change your avatar!">
-                <span class="profile-avatar-emoji" id="profile-avatar">🌟</span>
+          <!-- Dashboard hero -->
+          <div class="profile-hero-card profile-hero-card--dashboard">
+            <div class="profile-hero-main">
+              <!-- Circular avatar with EXP ring -->
+              <div class="profile-avatar-wrap">
+                <svg class="profile-ring-svg" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
+                  <circle class="ring-deco" cx="70" cy="70" r="62" />
+                  <circle class="ring-track-lg" cx="70" cy="70" r="58" />
+                  <circle class="ring-fill-lg" id="profile-ring-fill" cx="70" cy="70" r="58" stroke-dasharray="364.4"
+                    stroke-dashoffset="364.4" />
+                </svg>
+                <div class="profile-avatar-inner" id="profile-avatar-click" title="Click to change your avatar!">
+                  <span class="profile-avatar-emoji" id="profile-avatar">🌟</span>
+                </div>
+                <div class="profile-lv-badge" id="profile-lv-badge">Lv. 1</div>
               </div>
-              <!-- Level badge pinned to bottom of circle -->
-              <div class="profile-lv-badge" id="profile-lv-badge">Lv. 1</div>
-            </div>
 
-            <h3 class="profile-name" id="profile-child-name">Learner</h3>
-            <div class="profile-level-badge" id="profile-level-badge">⭐ Level 1 – Little Spark</div>
-
-            <!-- Level milestone dots -->
-            <div class="level-path">
-              <div class="level-path-label">Level Journey</div>
-              <div class="level-dots" id="level-dots">
-                <div class="level-dot done" data-lv="1"><span>1</span></div>
-                <div class="level-dot" data-lv="2"><span>2</span></div>
-                <div class="level-dot" data-lv="3"><span>3</span></div>
-                <div class="level-dot" data-lv="4"><span>4</span></div>
-                <div class="level-dot" data-lv="5"><span>5</span></div>
-                <div class="level-dot" data-lv="6"><span>6</span></div>
-                <div class="level-dot" data-lv="7"><span>7</span></div>
+              <div class="profile-hero-details">
+                <h3 class="profile-name" id="profile-child-name">Learner</h3>
+                <div class="profile-level-badge" id="profile-level-badge">⭐ Level 1 – Little Spark</div>
+                <p class="profile-email" id="profile-email">learner@kidspark.com</p>
+                <button class="btn-secondary profile-edit-btn" id="profile-edit-btn">🖊️ Edit Profile</button>
               </div>
             </div>
           </div>
-          <div class="profile-stats-grid">
+
+          <div class="profile-stats-grid profile-stats-grid--dashboard">
             <div class="profile-stat-card">
               <div class="pstat-icon">💎</div>
               <div class="pstat-value" id="pstat-exp">0</div>
@@ -380,7 +368,7 @@
             <div class="profile-stat-card">
               <div class="pstat-icon">⭐</div>
               <div class="pstat-value" id="pstat-stars">0</div>
-              <div class="pstat-label">Stars</div>
+              <div class="pstat-label">Stars Earned</div>
             </div>
             <div class="profile-stat-card">
               <div class="pstat-icon">🔥</div>
@@ -392,18 +380,47 @@
               <div class="pstat-value" id="pstat-games">0</div>
               <div class="pstat-label">Games Played</div>
             </div>
+            <div class="profile-stat-card">
+              <div class="pstat-icon">❤️</div>
+              <div class="pstat-value" id="pstat-lives">20</div>
+              <div class="pstat-label">Lives Left</div>
+            </div>
+            <div class="profile-stat-card">
+              <div class="pstat-icon">📊</div>
+              <div class="pstat-value" id="pstat-progress">0%</div>
+              <div class="pstat-label">Level Progress</div>
+            </div>
           </div>
+
+          <div class="exp-progress-section profile-performance-card">
+            <h3 class="exp-title">📈 Performance Overview</h3>
+            <div class="exp-progress-row">
+              <p class="exp-progress-subtitle">Level Progress</p>
+              <p class="exp-bar-label" id="exp-bar-label">0 / 100 EXP to next level</p>
+            </div>
+            <div class="exp-bar-bg">
+              <div class="exp-bar-fill" id="exp-bar-fill"></div>
+            </div>
+
+            <!-- Level milestone dots -->
+            <div class="level-path">
+              <div class="level-path-label">🎯 Level Journey</div>
+              <div class="level-dots" id="level-dots">
+                <div class="level-dot done" data-lv="1"><span>1</span></div>
+                <div class="level-dot" data-lv="2"><span>2</span></div>
+                <div class="level-dot" data-lv="3"><span>3</span></div>
+                <div class="level-dot" data-lv="4"><span>4</span></div>
+                <div class="level-dot" data-lv="5"><span>5</span></div>
+                <div class="level-dot" data-lv="6"><span>6</span></div>
+                <div class="level-dot" data-lv="7"><span>7</span></div>
+              </div>
+            </div>
+          </div>
+
           <div class="lives-section">
             <h3 class="lives-title">❤️ Lives</h3>
             <div class="lives-bar" id="lives-bar"></div>
             <p class="lives-regen-text" id="lives-regen-text">Lives refill every minute!</p>
-          </div>
-          <div class="exp-progress-section">
-            <h3 class="exp-title">Level Progress</h3>
-            <div class="exp-bar-bg">
-              <div class="exp-bar-fill" id="exp-bar-fill"></div>
-            </div>
-            <p class="exp-bar-label" id="exp-bar-label">0 / 100 EXP to next level</p>
           </div>
         </section>
 
@@ -605,7 +622,7 @@
 
         <!-- ── Emoji grid pane ── -->
         <div id="avatar-tab-emoji">
-          <p class="avatar-tab-hint">Tap an emoji to select it</p>
+          <p class="avatar-tab-hint">Pick an emoji or an icon card</p>
           <div class="avatar-grid" id="avatar-options">
             <!-- Populated by profile.js -->
           </div>
@@ -613,7 +630,7 @@
 
         <!-- ── Upload pane ── -->
         <div id="avatar-tab-upload" class="hidden">
-          <p class="avatar-tab-hint">Upload a JPG, PNG, or SVG (max 2 MB)</p>
+          <p class="avatar-tab-hint">Upload JPG, PNG, SVG, WEBP, GIF, or ICO (max 2 MB)</p>
 
           <!-- Drop zone -->
           <div class="avatar-upload-zone" id="avatar-upload-zone" title="Click or drag an image here">
@@ -622,7 +639,7 @@
           </div>
 
           <!-- Hidden file input (triggered by upload zone click) -->
-          <input type="file" id="avatar-file-input" accept=".jpg,.jpeg,.png,.svg" class="hidden" />
+          <input type="file" id="avatar-file-input" accept=".jpg,.jpeg,.png,.svg,.webp,.gif,.ico" class="hidden" />
 
           <!-- Preview of selected image -->
           <img id="avatar-upload-preview" class="avatar-preview-img hidden" src="" alt="Preview" />

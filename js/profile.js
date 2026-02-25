@@ -28,6 +28,30 @@ const AVATARS = [
     '⚡', '🎯', '🏆', '💎', '🔮', '🎪',
 ];
 
+/* ── Predefined avatar icon cards (image options) ─────────────────────── */
+const AVATAR_ICON_CARDS = [
+    { label: 'Diamond', icon: '💎', bg: '#DDF2FF', border: '#A4CEE4' },
+    { label: 'Star', icon: '⭐', bg: '#FFF3D8', border: '#E4C78E' },
+    { label: 'Fire', icon: '🔥', bg: '#FFE8DD', border: '#E6B9A8' },
+    { label: 'Game', icon: '🎮', bg: '#E8E8FF', border: '#BDBDE4' },
+    { label: 'Heart', icon: '❤️', bg: '#FFE7EC', border: '#E6A7B5' },
+    { label: 'Chart', icon: '📊', bg: '#E2F8F0', border: '#A8DCC8' },
+];
+
+function buildAvatarCardDataUrl(icon, bg, border) {
+    const svg = `
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <rect x="8" y="8" width="112" height="112" rx="28" fill="${bg}" stroke="${border}" stroke-width="4"/>
+  <text x="64" y="78" text-anchor="middle" font-size="50" font-family="Segoe UI Emoji, Apple Color Emoji, Noto Color Emoji, sans-serif">${icon}</text>
+</svg>`;
+    return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+}
+
+const AVATAR_IMAGE_PRESETS = AVATAR_ICON_CARDS.map(card => ({
+    label: card.label,
+    value: buildAvatarCardDataUrl(card.icon, card.bg, card.border),
+}));
+
 /* ══════════════════════════════════════════════════════════════════════════
    KSProfile — main profile controller
    ══════════════════════════════════════════════════════════════════════════ */
@@ -116,9 +140,13 @@ const KSProfile = {
         const data = KSStorage.load();
         if (!data) return;
 
-        const stats = data.stats;
-        const level = this.getLevel(stats.exp || 0);
-        const next = this.getNextLevel(stats.exp || 0);
+        const stats = data.stats || {};
+        const exp = Number(stats.exp) || 0;
+        const level = this.getLevel(exp);
+        const next = this.getNextLevel(exp);
+        const progressPct = next
+            ? Math.min(100, Math.max(0, ((exp - level.expNeeded) / (next.expNeeded - level.expNeeded)) * 100))
+            : 100;
 
         /* ── Header child-name ── */
         const nameEl = document.getElementById('child-name-display');
@@ -128,9 +156,11 @@ const KSProfile = {
         const pName = document.getElementById('profile-child-name');
         const pBadge = document.getElementById('profile-level-badge');
         const pLvBadge = document.getElementById('profile-lv-badge');
+        const pEmail = document.getElementById('profile-email');
         if (pName) pName.textContent = data.childName || 'Learner';
         if (pBadge) pBadge.textContent = `⭐ Level ${level.level} – ${level.name}`;
         if (pLvBadge) pLvBadge.textContent = `Lv. ${level.level}`;
+        if (pEmail) pEmail.textContent = data.email || 'learner@kidspark.com';
 
         /* ── Update avatar display (emoji or uploaded image) ── */
         this._applyAvatarToEl(
@@ -143,7 +173,7 @@ const KSProfile = {
         const ringFill = document.getElementById('profile-ring-fill');
         if (ringFill) {
             let pct = next
-                ? Math.min(1, (stats.exp - level.expNeeded) / (next.expNeeded - level.expNeeded))
+                ? Math.min(1, (exp - level.expNeeded) / (next.expNeeded - level.expNeeded))
                 : 1;
             ringFill.style.strokeDashoffset = RING_CIRC * (1 - pct);
         }
@@ -159,24 +189,25 @@ const KSProfile = {
 
         /* ── Stat chips ── */
         const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
-        set('pstat-exp', stats.exp || 0);
+        set('pstat-exp', exp);
         set('pstat-stars', stats.stars || 0);
         set('pstat-days', stats.loginStreak || 1);
         set('pstat-games', stats.gamesPlayed || 0);
+        set('pstat-lives', stats.lives || 20);
+        set('pstat-progress', `${Math.round(progressPct)}%`);
 
         /* ── Home stats bar ── */
         set('home-stars', stats.stars || 0);
-        set('home-exp', stats.exp || 0);
+        set('home-exp', exp);
         set('home-days', stats.loginStreak || 1);
         set('home-lives', stats.lives || 20);
 
         /* ── EXP progress bar ── */
         if (next) {
-            const fill = ((stats.exp - level.expNeeded) / (next.expNeeded - level.expNeeded)) * 100;
             const bar = document.getElementById('exp-bar-fill');
             const lbl = document.getElementById('exp-bar-label');
-            if (bar) bar.style.width = `${Math.min(100, fill)}%`;
-            if (lbl) lbl.textContent = `${stats.exp} / ${next.expNeeded} EXP to ${next.name}`;
+            if (bar) bar.style.width = `${progressPct}%`;
+            if (lbl) lbl.textContent = `${exp} / ${next.expNeeded} EXP to ${next.name}`;
         } else {
             const bar = document.getElementById('exp-bar-fill');
             const lbl = document.getElementById('exp-bar-label');
@@ -185,7 +216,7 @@ const KSProfile = {
         }
 
         /* ── Home top-right avatar mini ring ── */
-        this.renderHomeAvatar(stats.exp || 0, level, next);
+        this.renderHomeAvatar(exp, level, next);
 
         this.renderLives();
     },
@@ -198,7 +229,7 @@ const KSProfile = {
         const ringEl = document.getElementById('home-ring-fill');
 
         /* Apply avatar (emoji or image) */
-        const avatarVal = (data && data.stats.avatar) || level.emoji;
+        const avatarVal = data?.stats?.avatar || level.emoji;
         this._applyAvatarToEl(emojiEl, avatarVal);
 
         if (lvEl) lvEl.textContent = `Lv.${level.level}`;
@@ -217,6 +248,11 @@ const KSProfile = {
         const data = KSStorage.load();
         if (!data) return;
         const lives = data.stats.lives || 0;
+        const pLives = document.getElementById('pstat-lives');
+        if (pLives) pLives.textContent = lives;
+        const homeLives = document.getElementById('home-lives');
+        if (homeLives) homeLives.textContent = lives;
+
         const bar = document.getElementById('lives-bar');
         if (!bar) return;
 
@@ -318,6 +354,46 @@ const KSProfile = {
        AVATAR SYSTEM
        ═══════════════════════════════════════════════════════════════════ */
 
+    _normalizeAvatarValue(value) {
+        if (typeof value === 'string') return value.trim();
+        if (value == null) return '';
+        return String(value).trim();
+    },
+
+    _isImageAvatarValue(value) {
+        const v = this._normalizeAvatarValue(value);
+        if (!v) return false;
+        if (/^(data:image\/|blob:|https?:\/\/|file:\/\/|\/|\.\/|\.\.\/)/i.test(v)) return true;
+        return /\.(png|jpe?g|svg|webp|gif|ico)(\?.*)?$/i.test(v);
+    },
+
+    _getAvatarValueFromOption(optionEl) {
+        if (!optionEl) return '';
+        const byData = optionEl.dataset?.avatar || optionEl.getAttribute('data-avatar');
+        if (byData) return this._normalizeAvatarValue(byData);
+        const byImg = optionEl.querySelector('img')?.getAttribute('src');
+        if (byImg) return this._normalizeAvatarValue(byImg);
+        return this._normalizeAvatarValue(optionEl.textContent);
+    },
+
+    _selectAvatarOption(optionEl, grid) {
+        if (!optionEl || !grid) return;
+
+        const value = this._getAvatarValueFromOption(optionEl);
+        if (!value) return;
+
+        this.pendingAvatar = value;
+
+        grid.querySelectorAll('.avatar-option').forEach(el => {
+            el.classList.toggle('selected', el === optionEl);
+        });
+
+        const preview = document.getElementById('avatar-upload-preview');
+        if (preview) { preview.src = ''; preview.classList.add('hidden'); }
+        const uploadZone = document.getElementById('avatar-upload-zone');
+        if (uploadZone) uploadZone.dataset.selected = 'false';
+    },
+
     /**
      * Apply either an emoji or a base64 image URL to an element.
      * If the value starts with "data:" or "http", we create/update an <img>.
@@ -327,8 +403,9 @@ const KSProfile = {
      */
     _applyAvatarToEl(el, value) {
         if (!el) return;
+        const normalized = this._normalizeAvatarValue(value);
 
-        if (value && (value.startsWith('data:') || value.startsWith('http') || value.startsWith('blob:'))) {
+        if (this._isImageAvatarValue(normalized)) {
             /* Image avatar */
             el.textContent = ''; /* clear any emoji text */
 
@@ -339,13 +416,13 @@ const KSProfile = {
                 img.className = 'avatar-img';
                 el.appendChild(img);
             }
-            img.src = value;
+            img.src = normalized;
             img.alt = 'Avatar';
         } else {
             /* Emoji avatar — remove any img first */
             const img = el.querySelector('img.avatar-img');
             if (img) img.remove();
-            el.textContent = value || '🌟';
+            el.textContent = normalized || '🌟';
         }
     },
 
@@ -356,7 +433,7 @@ const KSProfile = {
     loadAvatar() {
         const data = KSStorage.load();
         if (!data) return;
-        const avatarVal = data.stats.avatar;
+        const avatarVal = this._normalizeAvatarValue(data?.stats?.avatar);
         if (!avatarVal) return;
 
         /* Apply to all avatar display points */
@@ -368,11 +445,12 @@ const KSProfile = {
      * @param {string} avatarValue  — emoji or base64 data URL
      */
     updateAvatarGlobally(avatarValue) {
+        const val = this._normalizeAvatarValue(avatarValue) || '🌟';
         /* Profile hero avatar */
-        this._applyAvatarToEl(document.getElementById('profile-avatar'), avatarValue);
+        this._applyAvatarToEl(document.getElementById('profile-avatar'), val);
 
         /* Home page mini avatar button */
-        this._applyAvatarToEl(document.getElementById('home-profile-emoji'), avatarValue);
+        this._applyAvatarToEl(document.getElementById('home-profile-emoji'), val);
     },
 
     /** Open the avatar picker modal */
@@ -382,7 +460,7 @@ const KSProfile = {
         if (!modal) return;
 
         /* Pre-select the stored avatar as pending */
-        this.pendingAvatar = (data && data.stats.avatar) || '🌟';
+        this.pendingAvatar = this._normalizeAvatarValue(data?.stats?.avatar || '🌟');
 
         /* Reset to "Choose" tab by default */
         this._switchAvatarTab('emoji');
@@ -394,7 +472,9 @@ const KSProfile = {
         const preview = document.getElementById('avatar-upload-preview');
         if (preview) { preview.src = ''; preview.classList.add('hidden'); }
         const uploadZone = document.getElementById('avatar-upload-zone');
-        if (uploadZone) uploadZone.dataset.selected = '';
+        if (uploadZone) uploadZone.dataset.selected = 'false';
+        const fileInput = document.getElementById('avatar-file-input');
+        if (fileInput) fileInput.value = '';
 
         modal.classList.remove('hidden');
     },
@@ -425,20 +505,53 @@ const KSProfile = {
         if (!grid) return;
 
         grid.innerHTML = '';
+
+        const current = this._normalizeAvatarValue(this.pendingAvatar);
+
         AVATARS.forEach(emoji => {
             const opt = document.createElement('div');
-            opt.className = `avatar-option ${emoji === this.pendingAvatar ? 'selected' : ''}`;
+            opt.className = `avatar-option ${emoji === current ? 'selected' : ''}`;
             opt.textContent = emoji;
+            opt.dataset.avatar = emoji;
             opt.title = emoji;
+            opt.setAttribute('role', 'button');
+            opt.setAttribute('tabindex', '0');
 
             opt.addEventListener('click', () => {
-                /* Store emoji as pending; clear any uploaded image */
-                this.pendingAvatar = emoji;
+                this._selectAvatarOption(opt, grid);
+            });
+            opt.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    this._selectAvatarOption(opt, grid);
+                }
+            });
 
-                /* Highlight only selected */
-                grid.querySelectorAll('.avatar-option').forEach(el => {
-                    el.classList.toggle('selected', el.textContent === emoji);
-                });
+            grid.appendChild(opt);
+        });
+
+        AVATAR_IMAGE_PRESETS.forEach(card => {
+            const opt = document.createElement('div');
+            opt.className = `avatar-option avatar-option-image ${card.value === current ? 'selected' : ''}`;
+            opt.dataset.avatar = card.value;
+            opt.title = card.label;
+            opt.setAttribute('role', 'button');
+            opt.setAttribute('tabindex', '0');
+
+            const img = document.createElement('img');
+            img.className = 'avatar-option-img';
+            img.src = card.value;
+            img.alt = `${card.label} avatar`;
+            opt.appendChild(img);
+
+            opt.addEventListener('click', () => {
+                this._selectAvatarOption(opt, grid);
+            });
+            opt.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    this._selectAvatarOption(opt, grid);
+                }
             });
 
             grid.appendChild(opt);
@@ -451,10 +564,24 @@ const KSProfile = {
      * @param {File} file
      */
     handleFileUpload(file) {
+        if (!file) return;
+
         /* Validate file type */
-        const allowed = ['image/jpeg', 'image/jpg', 'image/png', 'image/svg+xml'];
-        if (!allowed.includes(file.type)) {
-            KSApp.showToast('❌ Please upload a JPG, PNG, or SVG file.', 'error');
+        const allowedMime = [
+            'image/jpeg',
+            'image/jpg',
+            'image/png',
+            'image/svg+xml',
+            'image/webp',
+            'image/gif',
+            'image/x-icon',
+            'image/vnd.microsoft.icon'
+        ];
+        const allowedExt = ['jpg', 'jpeg', 'png', 'svg', 'webp', 'gif', 'ico'];
+        const ext = (file.name || '').split('.').pop().toLowerCase();
+        const hasValidType = allowedMime.includes((file.type || '').toLowerCase()) || allowedExt.includes(ext);
+        if (!hasValidType) {
+            KSApp.showToast('❌ Please upload JPG, PNG, SVG, WEBP, GIF, or ICO.', 'error');
             return;
         }
 
@@ -467,15 +594,26 @@ const KSProfile = {
         const reader = new FileReader();
 
         reader.onload = (e) => {
+            const result = e?.target?.result;
+            if (!result) {
+                KSApp.showToast('❌ Could not read the file. Try another image.', 'error');
+                return;
+            }
+
             /* Store the base64 data URL as the pending avatar */
-            this.pendingAvatar = e.target.result;
+            this.pendingAvatar = result;
 
             /* Show a preview inside the modal */
             const preview = document.getElementById('avatar-upload-preview');
             if (preview) {
-                preview.src = e.target.result;
+                preview.src = result;
                 preview.classList.remove('hidden');
             }
+            const uploadZone = document.getElementById('avatar-upload-zone');
+            if (uploadZone) uploadZone.dataset.selected = 'true';
+            document.querySelectorAll('#avatar-options .avatar-option.selected').forEach(el => {
+                el.classList.remove('selected');
+            });
 
             KSApp.showToast('✅ Image loaded! Click Save to apply.', 'success');
         };
@@ -492,36 +630,32 @@ const KSProfile = {
      */
     saveAvatar() {
         /* Read which emoji/image is currently selected in the grid */
-        const selectedEl = document.querySelector('.avatar-option.selected');
+        const selectedEl = document.querySelector('#avatar-options .avatar-option.selected');
         if (selectedEl && !this.pendingAvatar) {
-            this.pendingAvatar = selectedEl.textContent;
+            this.pendingAvatar = this._getAvatarValueFromOption(selectedEl);
         }
 
-        if (!this.pendingAvatar) {
+        const val = this._normalizeAvatarValue(this.pendingAvatar);
+        if (!val) {
             KSApp.showToast('Please select an avatar first! 😊', 'error');
             return;
         }
+        this.pendingAvatar = val;
 
         /* 1. Persist to localStorage via KSStorage */
         const data = KSStorage.load();
         if (!data) return;
-        data.stats.avatar = this.pendingAvatar;
-        KSStorage.save(data);
-
-        /* 2. Directly set emoji on DOM elements IMMEDIATELY (before renderAll) */
-        const pAvatar = document.getElementById('profile-avatar');
-        const hAvatar = document.getElementById('home-profile-emoji');
-        const val = this.pendingAvatar;
-
-        if (val && (val.startsWith('data:') || val.startsWith('http'))) {
-            /* Image avatar — apply via _applyAvatarToEl */
-            this._applyAvatarToEl(pAvatar, val);
-            this._applyAvatarToEl(hAvatar, val);
-        } else {
-            /* Emoji avatar — set text directly, clear any leftover img */
-            if (pAvatar) { pAvatar.querySelectorAll('img').forEach(i => i.remove()); pAvatar.textContent = val; }
-            if (hAvatar) { hAvatar.querySelectorAll('img').forEach(i => i.remove()); hAvatar.textContent = val; }
+        if (!data.stats) data.stats = {};
+        data.stats.avatar = val;
+        try {
+            KSStorage.save(data);
+        } catch {
+            KSApp.showToast('❌ Could not save avatar. Try a smaller image.', 'error');
+            return;
         }
+
+        /* 2. Apply avatar immediately everywhere */
+        this.updateAvatarGlobally(val);
 
         /* 3. Re-render full profile for ring / stat sync */
         this.renderAll();
@@ -530,7 +664,8 @@ const KSProfile = {
         const modal = document.getElementById('avatar-modal');
         if (modal) modal.classList.add('hidden');
 
-        KSApp.showToast(`Avatar set to ${val.startsWith('data:') ? '📷 your photo' : val}! ✨`, 'success');
+        const isImage = this._isImageAvatarValue(val);
+        KSApp.showToast(`Avatar set to ${isImage ? '📷 your photo' : val}! ✨`, 'success');
     },
 
     /* ═══════════════════════════════════════════════════════════════════
@@ -549,6 +684,10 @@ const KSProfile = {
         const avatarClick = document.getElementById('profile-avatar-click');
         if (avatarClick) {
             avatarClick.addEventListener('click', () => this.showAvatarPicker());
+        }
+        const editBtn = document.getElementById('profile-edit-btn');
+        if (editBtn) {
+            editBtn.addEventListener('click', () => this.showAvatarPicker());
         }
 
         /* ── Avatar modal tab buttons ── */
@@ -582,7 +721,11 @@ const KSProfile = {
             });
             /* Click on zone → trigger file input */
             uploadZone.addEventListener('click', () => {
-                document.getElementById('avatar-file-input')?.click();
+                const input = document.getElementById('avatar-file-input');
+                if (input) {
+                    input.value = '';
+                    input.click();
+                }
             });
         }
 
