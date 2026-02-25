@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KidSpark – Igniting Curiosity, Guiding Growth 🌟</title>
+  <meta name="description"
+    content="KidSpark is a safe, joyful, parent-controlled digital learning companion for Grade 1 children. Featuring games, AI chatbot, image generator, and adaptive learning." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@400;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+  <!-- App Shell -->
+  <div id="app-shell">
+    <!-- Auth Screens -->
+    <div id="auth-screen" class="screen active">
+      <div id="auth-container">
+        <!-- Register View -->
+        <div id="register-view" class="auth-card hidden">
+          <div class="auth-logo">
+            <span class="logo-spark">⚡</span>
+            <h1 class="logo-text">KidSpark</h1>
+            <p class="logo-tagline">Igniting Curiosity, Guiding Growth</p>
+          </div>
+          <h2 class="auth-title">Create Account ✨</h2>
+          <form id="register-form">
+            <div class="form-group">
+              <label for="reg-email">📧 Parent Email</label>
+              <input type="email" id="reg-email" placeholder="your@email.com" required />
+            </div>
+            <div class="form-group">
+              <label for="reg-password">🔒 Password</label>
+              <input type="password" id="reg-password" placeholder="Min 6 characters" required />
+            </div>
+            <div class="form-group">
+              <label for="reg-pin">🔑 Parent PIN (4 digits)</label>
+              <input type="password" id="reg-pin" placeholder="e.g. 1234" maxlength="4" pattern="[0-9]{4}" required />
+            </div>
+            <div class="form-group">
+              <label for="reg-child-name">👦 Child's Name</label>
+              <input type="text" id="reg-child-name" placeholder="Enter child's name" required />
+            </div>
+            <div class="form-group">
+              <label for="reg-time-limit">⏰ Daily Time Limit (minutes)</label>
+              <input type="number" id="reg-time-limit" placeholder="e.g. 60" min="15" max="240" value="60" required />
+            </div>
+            <button type="submit" class="btn-primary" id="register-btn">🚀 Let's Go!</button>
+          </form>
+          <p class="auth-switch">Already have an account? <a href="#" id="goto-login">Log In</a></p>
+        </div>
+
+        <!-- Login View -->
+        <div id="login-view" class="auth-card">
+          <div class="auth-logo">
+            <span class="logo-spark">⚡</span>
+            <h1 class="logo-text">KidSpark</h1>
+            <p class="logo-tagline">Igniting Curiosity, Guiding Growth</p>
+          </div>
+          <h2 class="auth-title">Welcome Back! 🎉</h2>
+          <form id="login-form">
+            <div class="form-group">
+              <label for="login-email">📧 Email</label>
+              <input type="email" id="login-email" placeholder="your@email.com" required />
+            </div>
+            <div class="form-group">
+              <label for="login-password">🔒 Password</label>
+              <input type="password" id="login-password" placeholder="Your password" required />
+            </div>
+            <button type="submit" class="btn-primary" id="login-btn">✨ Login!</button>
+          </form>
+          <p class="auth-switch">New here? <a href="#" id="goto-register">Create Account</a></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="main-app" class="screen hidden">
+      <!-- Sidebar -->
+      <nav id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+          <span class="logo-spark-sm">⚡</span>
+          <span class="sidebar-logo-text">KidSpark</span>
+        </div>
+        <ul class="nav-list">
+          <li class="nav-item active" data-section="home" id="nav-home">
+            <span class="nav-icon">🏠</span><span class="nav-label">Home</span>
+          </li>
+          <li class="nav-item" data-section="chatbot" id="nav-chatbot">
+            <span class="nav-icon">🤖</span><span class="nav-label">AI Chatbot</span>
+          </li>
+          <li class="nav-item" data-section="image-gen" id="nav-image-gen">
+            <span class="nav-icon">🎨</span><span class="nav-label">Image Magic</span>
+          </li>
+          <li class="nav-item" data-section="games" id="nav-games">
+            <span class="nav-icon">🎮</span><span class="nav-label">Games</span>
+          </li>
+          <li class="nav-item" data-section="profile" id="nav-profile">
+            <span class="nav-icon">👤</span><span class="nav-label">My Profile</span>
+          </li>
+          <li class="nav-item" data-section="parents" id="nav-parents">
+            <span class="nav-icon">👨‍👩‍👧</span><span class="nav-label">Parents</span>
+          </li>
+        </ul>
+        <div class="sidebar-footer">
+          <div class="sidebar-timer" id="sidebar-timer">
+            <span class="timer-icon">⏱️</span>
+            <span id="timer-display">60:00</span>
+          </div>
+          <div class="sidebar-lives" id="sidebar-lives">
+            <span class="lives-icon">❤️</span>
+            <span id="lives-display">20</span>
+          </div>
+          <div class="sidebar-logout" id="sidebar-logout-btn" title="Logout">
+            <span class="logout-icon">🚪</span>
+            <span class="logout-text">Logout</span>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Main Content -->
+      <main id="main-content" class="main-content">
+        <!-- Home Section -->
+        <section id="section-home" class="content-section active">
+          <div class="section-header home-section-header">
+            <div>
+              <h2 class="section-title">Hello, <span id="child-name-display">Learner</span>! 🌟</h2>
+              <p class="section-subtitle">What would you like to do today?</p>
+            </div>
+            <!-- Profile avatar shortcut top-right -->
+            <button id="home-profile-btn" class="home-profile-btn" title="View my profile" data-goto="profile">
+              <div class="home-profile-ring" id="home-profile-ring">
+                <svg class="home-ring-svg" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg">
+                  <circle class="ring-track" cx="28" cy="28" r="24" />
+                  <circle class="ring-fill" id="home-ring-fill" cx="28" cy="28" r="24" stroke-dasharray="150.8"
+                    stroke-dashoffset="150.8" />
+                </svg>
+                <span class="home-profile-emoji" id="home-profile-emoji">🌟</span>
+              </div>
+              <span class="home-profile-lv" id="home-profile-lv">Lv.1</span>
+            </button>
+          </div>
+          <div class="home-stats-bar">
+            <div class="stat-chip">⭐ <span id="home-stars">0</span> Stars</div>
+            <div class="stat-chip">💎 <span id="home-exp">0</span> EXP</div>
+            <div class="stat-chip">🔥 <span id="home-days">0</span> Day Streak</div>
+            <div class="stat-chip">❤️ <span id="home-lives">20</span> Lives</div>
+          </div>
+          <div class="home-grid">
+            <div class="home-card" id="hc-chatbot" data-goto="chatbot">
+              <div class="home-card-icon">🤖</div>
+              <h3>AI Chatbot</h3>
+              <p>Ask Maths & English questions!</p>
+              <div class="home-card-badge">RAG Powered</div>
+            </div>
+            <div class="home-card" id="hc-image" data-goto="image-gen">
+              <div class="home-card-icon">🎨</div>
+              <h3>Image Magic</h3>
+              <p>Create amazing animal pictures!</p>
+              <div class="home-card-badge">AI Art</div>
+            </div>
+            <div class="home-card" id="hc-games" data-goto="games">
+              <div class="home-card-icon">🎮</div>
+              <h3>Fun Games</h3>
+              <p>Learn with exciting games!</p>
+              <div class="home-card-badge">+15 EXP</div>
+            </div>
+            <div class="home-card" id="hc-profile" data-goto="profile">
+              <div class="home-card-icon">🏆</div>
+              <h3>My Profile</h3>
+              <p>See your awesome progress!</p>
+              <div class="home-card-badge">Level Up</div>
+            </div>
+          </div>
+          <div class="daily-tip">
+            <div class="tip-icon">💡</div>
+            <div class="tip-text" id="daily-tip-text">Loading tip...</div>
+          </div>
+        </section>
+
+        <!-- Chatbot Section -->
+        <section id="section-chatbot" class="content-section hidden">
+          <div class="section-header">
+            <h2 class="section-title">🤖 AI Study Buddy</h2>
+            <p class="section-subtitle">Click a chapter to see its video, click a question for an answer!</p>
+          </div>
+          <div class="subject-tabs">
+            <button class="subject-tab active" id="tab-english" data-subject="english">📖 English</button>
+            <button class="subject-tab" id="tab-maths" data-subject="maths">🔢 Maths</button>
+          </div>
+          <!-- Chatbot Layout: Books + Video Panel -->
+          <div class="chatbot-layout">
+            <div id="chatbot-books" class="chatbot-books"></div>
+            <!-- Right-side Video Panel -->
+            <div id="video-panel" class="video-panel hidden">
+              <div class="video-panel-header">
+                <div>
+                  <div class="video-panel-label" id="video-panel-label">📺 Chapter Video</div>
+                  <div class="video-panel-title" id="video-panel-title">Chapter Video</div>
+                </div>
+                <button class="video-panel-close" id="close-video-panel" title="Close video">✕</button>
+              </div>
+              <div class="video-iframe-wrap">
+                <iframe id="video-iframe" src="" title="Chapter video" frameborder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen></iframe>
+              </div>
+              <p class="video-panel-hint">🎓 Watch this video to help you learn!</p>
+            </div>
+          </div>
+          <div id="chatbot-answer-panel" class="answer-panel hidden">
+            <div class="answer-header">
+              <span class="answer-bot-icon">🤖</span>
+              <span class="answer-title">Sparky Says:</span>
+              <button class="answer-close" id="close-answer">✕</button>
+            </div>
+            <div id="answer-question" class="answer-question"></div>
+            <div id="answer-text" class="answer-text"></div>
+            <div class="answer-actions">
+              <button class="btn-secondary" id="answer-read-aloud">🔊 Read Aloud</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Image Generator Section -->
+        <section id="section-image-gen" class="content-section hidden">
+          <div class="section-header">
+            <h2 class="section-title">🎨 Image Magic</h2>
+            <p class="section-subtitle">Click an animal to see its picture!</p>
+          </div>
+          <div class="animal-grid" id="animal-grid"></div>
+          <!-- Backdrop: click outside the card to close -->
+          <div class="image-backdrop hidden" id="image-backdrop">
+            <div id="image-display" class="image-display">
+              <!-- Header: animal name -->
+              <div class="image-display-header">
+                <span id="image-animal-name" class="image-animal-name"></span>
+              </div>
+              <!-- Body: canvas LEFT · info RIGHT -->
+              <div class="image-display-body">
+                <!-- LEFT: big emoji canvas -->
+                <div id="image-canvas" class="image-canvas">
+                  <div class="image-loading" id="image-loading">
+                    <div class="loading-spinner"></div>
+                    <p>Drawing your animal... 🎨</p>
+                  </div>
+                </div>
+                <!-- RIGHT: info panel (facts + speak button) -->
+                <div class="image-info-panel" id="image-fun-fact"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Games Section -->
+        <section id="section-games" class="content-section hidden">
+          <div class="section-header">
+            <h2 class="section-title">🎮 Fun Learning Games</h2>
+            <p class="section-subtitle">Play and earn EXP! +15 per game ⭐</p>
+          </div>
+          <div class="games-grid" id="games-grid">
+            <div class="game-card" id="game-alphabet" data-game="alphabet">
+              <div class="game-card-icon">🔤</div>
+              <h3>ABC Adventure</h3>
+              <p>Learn the alphabet!</p>
+              <div class="game-exp-badge">+15 EXP</div>
+            </div>
+            <div class="game-card" id="game-numbers" data-game="numbers">
+              <div class="game-card-icon">🔢</div>
+              <h3>Number Fun</h3>
+              <p>Count and match!</p>
+              <div class="game-exp-badge">+15 EXP</div>
+            </div>
+            <div class="game-card" id="game-addition" data-game="addition">
+              <div class="game-card-icon">➕</div>
+              <h3>Addition Quest</h3>
+              <p>Add it up!</p>
+              <div class="game-exp-badge">+15 EXP</div>
+            </div>
+            <div class="game-card" id="game-subtraction" data-game="subtraction">
+              <div class="game-card-icon">➖</div>
+              <h3>Subtraction Star</h3>
+              <p>Take away!</p>
+              <div class="game-exp-badge">+15 EXP</div>
+            </div>
+            <div class="game-card" id="game-shapes" data-game="shapes">
+              <div class="game-card-icon">🔷</div>
+              <h3>Shape Safari</h3>
+              <p>Find the shapes!</p>
+              <div class="game-exp-badge">+15 EXP</div>
+            </div>
+            <div class="game-card" id="game-body" data-game="body">
+              <div class="game-card-icon">🧒</div>
+              <h3>Body Parts</h3>
+              <p>Know your body!</p>
+              <div class="game-exp-badge">+15 EXP</div>
+            </div>
+            <div class="game-card" id="game-puzzle" data-game="puzzle">
+              <div class="game-card-icon">🧩</div>
+              <h3>Word Puzzle</h3>
+              <p>Unscramble words!</p>
+              <div class="game-exp-badge">+15 EXP</div>
+            </div>
+            <div class="game-card" id="game-rhymes" data-game="rhymes">
+              <div class="game-card-icon">🎵</div>
+              <h3>Sing & Rhyme</h3>
+              <p>Fun with rhymes!</p>
+              <div class="game-exp-badge">+15 EXP</div>
+            </div>
+          </div>
+
+          <!-- Game Arena (shown when a game is active) -->
+          <div id="game-arena" class="game-arena hidden">
+            <div class="game-arena-header">
+              <button class="arena-back-btn" id="arena-back">← Back</button>
+              <span class="arena-title" id="arena-title">Game</span>
+              <div class="arena-lives" id="arena-lives-display">❤️❤️❤️</div>
+            </div>
+            <div id="game-content" class="game-content"></div>
+          </div>
+        </section>
+
+        <!-- Profile Section -->
+        <section id="section-profile" class="content-section hidden">
+          <div class="section-header">
+            <h2 class="section-title">🏆 My Profile</h2>
+          </div>
+
+          <!-- Hero Profile Card -->
+          <div class="profile-hero-card">
+            <!-- Circular avatar with EXP ring -->
+            <div class="profile-avatar-wrap">
+              <svg class="profile-ring-svg" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
+                <!-- Decorative dashes behind ring -->
+                <circle class="ring-deco" cx="70" cy="70" r="62" />
+                <!-- Track -->
+                <circle class="ring-track-lg" cx="70" cy="70" r="58" />
+                <!-- Animated EXP fill -->
+                <circle class="ring-fill-lg" id="profile-ring-fill" cx="70" cy="70" r="58" stroke-dasharray="364.4"
+                  stroke-dashoffset="364.4" />
+              </svg>
+              <!-- Avatar emoji inside ring -->
+              <div class="profile-avatar-inner" id="profile-avatar-click" title="Click to change your avatar!">
+                <span class="profile-avatar-emoji" id="profile-avatar">🌟</span>
+              </div>
+              <!-- Level badge pinned to bottom of circle -->
+              <div class="profile-lv-badge" id="profile-lv-badge">Lv. 1</div>
+            </div>
+
+            <h3 class="profile-name" id="profile-child-name">Learner</h3>
+            <div class="profile-level-badge" id="profile-level-badge">⭐ Level 1 – Little Spark</div>
+
+            <!-- Level milestone dots -->
+            <div class="level-path">
+              <div class="level-path-label">Level Journey</div>
+              <div class="level-dots" id="level-dots">
+                <div class="level-dot done" data-lv="1"><span>1</span></div>
+                <div class="level-dot" data-lv="2"><span>2</span></div>
+                <div class="level-dot" data-lv="3"><span>3</span></div>
+                <div class="level-dot" data-lv="4"><span>4</span></div>
+                <div class="level-dot" data-lv="5"><span>5</span></div>
+                <div class="level-dot" data-lv="6"><span>6</span></div>
+                <div class="level-dot" data-lv="7"><span>7</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="profile-stats-grid">
+            <div class="profile-stat-card">
+              <div class="pstat-icon">💎</div>
+              <div class="pstat-value" id="pstat-exp">0</div>
+              <div class="pstat-label">EXP Points</div>
+            </div>
+            <div class="profile-stat-card">
+              <div class="pstat-icon">⭐</div>
+              <div class="pstat-value" id="pstat-stars">0</div>
+              <div class="pstat-label">Stars</div>
+            </div>
+            <div class="profile-stat-card">
+              <div class="pstat-icon">🔥</div>
+              <div class="pstat-value" id="pstat-days">0</div>
+              <div class="pstat-label">Day Streak</div>
+            </div>
+            <div class="profile-stat-card">
+              <div class="pstat-icon">🎮</div>
+              <div class="pstat-value" id="pstat-games">0</div>
+              <div class="pstat-label">Games Played</div>
+            </div>
+          </div>
+          <div class="lives-section">
+            <h3 class="lives-title">❤️ Lives</h3>
+            <div class="lives-bar" id="lives-bar"></div>
+            <p class="lives-regen-text" id="lives-regen-text">Lives refill every minute!</p>
+          </div>
+          <div class="exp-progress-section">
+            <h3 class="exp-title">Level Progress</h3>
+            <div class="exp-bar-bg">
+              <div class="exp-bar-fill" id="exp-bar-fill"></div>
+            </div>
+            <p class="exp-bar-label" id="exp-bar-label">0 / 100 EXP to next level</p>
+          </div>
+        </section>
+
+        <!-- Parents Section -->
+        <section id="section-parents" class="content-section hidden">
+          <div class="section-header">
+            <h2 class="section-title">👨‍👩‍👧 Parents Portal</h2>
+          </div>
+          <!-- PIN Gate -->
+          <div id="parents-pin-gate" class="pin-gate">
+            <div class="pin-gate-card">
+              <div class="pin-gate-icon">🔐</div>
+              <h3>Parent Access</h3>
+              <p>Enter your 4-digit PIN to continue</p>
+              <div class="pin-input-row">
+                <input type="password" id="parent-pin-input" class="pin-input" maxlength="4" placeholder="••••" />
+                <button class="btn-primary" id="verify-pin-btn">Unlock</button>
+              </div>
+              <p class="pin-error hidden" id="pin-error">❌ Wrong PIN. Try again!</p>
+            </div>
+          </div>
+          <!-- Parents Dashboard -->
+          <div id="parents-dashboard" class="parents-dashboard hidden">
+            <div class="parents-tabs">
+              <button class="parents-tab active" data-ptab="stats">📊 Stats</button>
+              <button class="parents-tab" data-ptab="settings">⚙️ Settings</button>
+              <button class="parents-tab" data-ptab="report">📄 Report</button>
+            </div>
+            <div id="parents-stats-tab" class="parents-tab-content">
+
+              <!-- Easy-to-read summary cards (populated by JS) -->
+              <div id="ps-stat-summary"></div>
+
+              <!-- Raw stat chips (hidden labels for JS to update) -->
+              <div style="display:none">
+                <span id="ps-child-name">—</span>
+                <span id="ps-exp">0</span>
+                <span id="ps-stars">0</span>
+                <span id="ps-level">1</span>
+                <span id="ps-days">0</span>
+                <span id="ps-games">0</span>
+                <span id="ps-time-used">0 min</span>
+                <span id="ps-time-limit">60 min</span>
+              </div>
+
+              <!-- Charts Row -->
+              <div class="parent-charts-row">
+                <div class="parent-chart-card">
+                  <p class="chart-hint">📊 <strong>Bar chart</strong> — hover each bar to see what it means</p>
+                  <div class="chart-container" style="height:220px">
+                    <canvas id="stats-bar-chart"></canvas>
+                  </div>
+                </div>
+                <div class="parent-chart-card">
+                  <p class="chart-hint">🔴 Red = games time used today &nbsp; 🟢 Green = time still available</p>
+                  <div class="chart-container" style="height:220px">
+                    <canvas id="stats-pie-chart"></canvas>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <div id="parents-settings-tab" class="parents-tab-content hidden">
+              <div class="settings-layout">
+                <!-- Settings Form Card -->
+                <div class="settings-card settings-form-card">
+                  <div class="settings-card-header">
+                    <span class="settings-card-icon">⚙️</span>
+                    <h3>Account Settings</h3>
+                  </div>
+                  <div class="settings-form">
+                    <div class="set-form-group">
+                      <label for="new-pin">🔑 Change PIN</label>
+                      <input type="password" id="new-pin" placeholder="New 4-digit PIN" maxlength="4" />
+                      <span class="input-hint">Enter a secure 4-digit PIN to protect the parent portal</span>
+                    </div>
+                    <div class="set-form-group">
+                      <label for="new-time-limit">⏰ Daily Time Limit (minutes)</label>
+                      <input type="number" id="new-time-limit" placeholder="e.g. 60" min="15" max="240" />
+                      <span class="input-hint">Recommended: 30-60 minutes for healthy screen time</span>
+                    </div>
+                    <button class="btn-primary" id="save-settings-btn">💾 Save Settings</button>
+                    <p class="settings-success hidden" id="settings-success">✅ Settings saved!</p>
+                  </div>
+                </div>
+                <!-- Tips Card -->
+                <div class="settings-card settings-tips-card">
+                  <div class="settings-card-header">
+                    <span class="settings-card-icon">💡</span>
+                    <h3>Parenting Tips</h3>
+                  </div>
+                  <ul class="tips-list">
+                    <li><span class="tip-icon">🎯</span> Set consistent daily learning schedules</li>
+                    <li><span class="tip-icon">🤝</span> Learn together with your child sometimes</li>
+                    <li><span class="tip-icon">🎉</span> Celebrate small achievements and milestones</li>
+                    <li><span class="tip-icon">📱</span> Balance screen time with physical activities</li>
+                    <li><span class="tip-icon">💬</span> Ask about what they learned each day</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div id="parents-report-tab" class="parents-tab-content hidden">
+              <div class="report-layout">
+                <!-- Report Preview Card -->
+                <div class="report-preview-card">
+                  <div class="report-preview-header">
+                    <span class="report-icon">📊</span>
+                    <div>
+                      <h3>Learning Progress Report</h3>
+                      <p class="report-desc">Comprehensive PDF report of your child's achievements</p>
+                    </div>
+                  </div>
+                  <div class="report-preview-content">
+                    <div class="report-preview-item">
+                      <span class="preview-icon">📈</span>
+                      <span>Progress charts & graphs</span>
+                    </div>
+                    <div class="report-preview-item">
+                      <span class="preview-icon">🎮</span>
+                      <span>Games completed & scores</span>
+                    </div>
+                    <div class="report-preview-item">
+                      <span class="preview-icon">⏱️</span>
+                      <span>Time spent learning</span>
+                    </div>
+                    <div class="report-preview-item">
+                      <span class="preview-icon">⭐</span>
+                      <span>Stars & achievements earned</span>
+                    </div>
+                    <div class="report-preview-item">
+                      <span class="preview-icon">🔥</span>
+                      <span>Login streak history</span>
+                    </div>
+                    <div class="report-preview-item">
+                      <span class="preview-icon">📚</span>
+                      <span>Subject-wise breakdown</span>
+                    </div>
+                  </div>
+                  <button class="btn-primary btn-download-report" id="download-report-btn">📄 Download PDF
+                    Report</button>
+                </div>
+                <!-- Report Info Card -->
+                <div class="report-info-card">
+                  <div class="report-info-header">
+                    <span class="info-icon">ℹ️</span>
+                    <h4>About Reports</h4>
+                  </div>
+                  <p class="report-info-text">
+                    Reports are generated based on your child's activity. Share them with teachers or keep them as
+                    progress records. Reports include all data from the current account.
+                  </p>
+                  <div class="report-format-badge">
+                    <span>📑</span> PDF Format • Ready to Print
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button class="btn-secondary" id="parents-logout-btn" style="margin-top:2rem;">🔒 Lock Portal</button>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Time Limit Overlay -->
+    <div id="time-limit-overlay" class="overlay hidden">
+      <div class="overlay-card">
+        <div class="overlay-icon">⏰</div>
+        <h2>Time's Up!</h2>
+        <p>You've used all your learning time for today. Great job! 🌟</p>
+        <p>Come back tomorrow for more fun!</p>
+        <p class="overlay-small">Parents can adjust time limits in the Parent Portal.</p>
+      </div>
+    </div>
+
+    <!-- PIN Modal for Parents Navigation -->
+    <div id="pin-modal" class="modal-overlay hidden">
+      <div class="modal-card">
+        <h3>🔐 Parent Verification</h3>
+        <p>Enter Parent PIN to access this section</p>
+        <input type="password" id="modal-pin-input" class="pin-input" maxlength="4" placeholder="••••" />
+        <div class="modal-actions">
+          <button class="btn-secondary" id="modal-cancel">Cancel</button>
+          <button class="btn-primary" id="modal-verify">Unlock</button>
+        </div>
+        <p class="pin-error hidden" id="modal-pin-error">❌ Wrong PIN!</p>
+      </div>
+    </div>
+
+    <!-- Avatar Selection Modal (tabbed: emoji grid + image upload) -->
+    <div id="avatar-modal" class="modal-overlay hidden">
+      <div class="modal-card avatar-modal-card">
+        <h3>Choose Your Avatar! ✨</h3>
+
+        <!-- Tab switcher -->
+        <div class="avatar-tabs">
+          <button class="avatar-tab-btn active" id="atab-emoji">😊 Pick Emoji</button>
+          <button class="avatar-tab-btn" id="atab-upload">📸 Upload Photo</button>
+        </div>
+
+        <!-- ── Emoji grid pane ── -->
+        <div id="avatar-tab-emoji">
+          <p class="avatar-tab-hint">Tap an emoji to select it</p>
+          <div class="avatar-grid" id="avatar-options">
+            <!-- Populated by profile.js -->
+          </div>
+        </div>
+
+        <!-- ── Upload pane ── -->
+        <div id="avatar-tab-upload" class="hidden">
+          <p class="avatar-tab-hint">Upload a JPG, PNG, or SVG (max 2 MB)</p>
+
+          <!-- Drop zone -->
+          <div class="avatar-upload-zone" id="avatar-upload-zone" title="Click or drag an image here">
+            <span class="upload-zone-icon">📁</span>
+            <span class="upload-zone-text">Click or drag an image here</span>
+          </div>
+
+          <!-- Hidden file input (triggered by upload zone click) -->
+          <input type="file" id="avatar-file-input" accept=".jpg,.jpeg,.png,.svg" class="hidden" />
+
+          <!-- Preview of selected image -->
+          <img id="avatar-upload-preview" class="avatar-preview-img hidden" src="" alt="Preview" />
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn-primary" id="avatar-save">💾 Save Avatar</button>
+          <button class="btn-secondary" id="avatar-cancel">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Time Over Modal — shown when game timer reaches 0 -->
+    <div id="timeover-modal" class="modal-overlay hidden">
+      <div class="modal-card timeover-card">
+        <div class="timeover-icon">⏰</div>
+        <h3>Time Over!</h3>
+        <p>Your game time is up for today. Great job playing! 🌟</p>
+        <p class="timeover-sub">Parents can increase the time limit in the Parent Portal.</p>
+        <button class="btn-primary" id="timeover-close" style="margin-top:1rem">OK, Got it!</button>
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast hidden"></div>
+  </div>
+
+  <script src="js/rag-data.js"></script>
+  <script src="js/crypto.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/timer.js"></script>
+  <script src="js/profile.js"></script>
+  <script src="js/video-links.js"></script>
+  <script src="js/chatbot.js"></script>
+  <script src="js/image-gen.js"></script>
+  <script src="js/games.js"></script>
+  <script src="js/parents.js"></script>
+  <script src="js/decorations.js"></script>
+  <script src="js/app.js"></script>
+</body>
+
+</html>
